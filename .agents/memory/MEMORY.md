@@ -1,0 +1,1 @@
+- [Ring demo boundary](ring-demo-boundary.md) — Keep the simulator distinct from a live Ring integration; recorded approval never means a gate unlock.

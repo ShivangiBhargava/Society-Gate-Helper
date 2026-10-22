@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: gate
+    description: Visitor approvals, rules, and logs
 paths:
   /healthz:
     get:
@@ -24,6 +26,188 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [gate]
+      summary: Get gate overview
+      responses:
+        "200":
+          description: Current society gate summary and recent visits
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+  /visits:
+    get:
+      operationId: listVisits
+      tags: [gate]
+      summary: List visitor events
+      responses:
+        "200":
+          description: Visitor events ordered newest first
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VisitRecord"
+  /demo/simulate:
+    post:
+      operationId: simulateVisit
+      tags: [gate]
+      summary: Send a signed simulated doorbell event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimulatedVisitInput"
+      responses:
+        "200":
+          description: Duplicate event safely ignored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulatedVisitResponse"
+        "201":
+          description: Event processed and logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulatedVisitResponse"
+  /webhooks/ring:
+    post:
+      operationId: receiveRingWebhook
+      tags: [gate]
+      summary: Receive a signed doorbell webhook
+      parameters:
+        - name: x-ring-signature
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RingWebhookEvent"
+      responses:
+        "200":
+          description: Duplicate event safely ignored
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulatedVisitResponse"
+        "201":
+          description: Event processed and logged
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulatedVisitResponse"
+        "401":
+          description: Invalid event signature
+        "503":
+          description: Ring webhook secret is not configured
+  /visits/{id}/decision:
+    patch:
+      operationId: decideVisit
+      tags: [gate]
+      summary: Record a resident decision
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VisitDecisionInput"
+      responses:
+        "200":
+          description: Updated visitor decision
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VisitRecord"
+        "404":
+          description: Visit not found
+  /rules:
+    get:
+      operationId: listRules
+      tags: [gate]
+      summary: List resident pre-approval rules
+      responses:
+        "200":
+          description: Pre-approval rules ordered by creation time
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PreApprovalRule"
+    post:
+      operationId: createRule
+      tags: [gate]
+      summary: Create a resident pre-approval rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreApprovalRuleInput"
+      responses:
+        "201":
+          description: Created rule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreApprovalRule"
+  /rules/{id}:
+    patch:
+      operationId: updateRule
+      tags: [gate]
+      summary: Enable or pause a pre-approval rule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PreApprovalRuleUpdate"
+      responses:
+        "200":
+          description: Updated rule
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PreApprovalRule"
+        "404":
+          description: Rule not found
+    delete:
+      operationId: deleteRule
+      tags: [gate]
+      summary: Delete a pre-approval rule
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Rule deleted
+        "404":
+          description: Rule not found
 components:
   schemas:
     HealthStatus:
@@ -33,4 +217,193 @@ components:
           type: string
       required:
         - status
+    VisitType:
+      type: string
+      enum: [delivery, guest, unknown]
+    VisitStatus:
+      type: string
+      enum: [pending, approved, denied, at_gate]
+    VisitDecision:
+      type: string
+      enum: [approved, denied, at_gate]
+    DayOfWeek:
+      type: string
+      enum: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+    VisitRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        eventId:
+          type: string
+        flatNumber:
+          type: string
+        visitorName:
+          type: string
+        visitType:
+          $ref: "#/components/schemas/VisitType"
+        provider:
+          type: string
+        status:
+          $ref: "#/components/schemas/VisitStatus"
+        source:
+          type: string
+        receivedAt:
+          type: string
+          format: date-time
+        decidedAt:
+          type: ["string", "null"]
+          format: date-time
+        decisionMessage:
+          type: ["string", "null"]
+      required:
+        - id
+        - eventId
+        - flatNumber
+        - visitorName
+        - visitType
+        - provider
+        - status
+        - source
+        - receivedAt
+        - decidedAt
+        - decisionMessage
+    DashboardSummary:
+      type: object
+      properties:
+        visitsToday:
+          type: integer
+        awaitingDecision:
+          type: integer
+        approvedToday:
+          type: integer
+        deniedToday:
+          type: integer
+        activeRules:
+          type: integer
+      required: [visitsToday, awaitingDecision, approvedToday, deniedToday, activeRules]
+    DashboardResponse:
+      type: object
+      properties:
+        summary:
+          $ref: "#/components/schemas/DashboardSummary"
+        recentVisits:
+          type: array
+          items:
+            $ref: "#/components/schemas/VisitRecord"
+      required: [summary, recentVisits]
+    SimulatedVisitInput:
+      type: object
+      properties:
+        eventId:
+          type: string
+          minLength: 1
+        flatNumber:
+          type: string
+          minLength: 1
+        visitorName:
+          type: string
+          minLength: 1
+        visitType:
+          $ref: "#/components/schemas/VisitType"
+        provider:
+          type: string
+          minLength: 1
+      required: [flatNumber, visitorName, visitType, provider]
+    RingWebhookEvent:
+      type: object
+      properties:
+        eventId:
+          type: string
+          minLength: 1
+        flatNumber:
+          type: string
+          minLength: 1
+        visitorName:
+          type: string
+          minLength: 1
+        visitType:
+          $ref: "#/components/schemas/VisitType"
+        provider:
+          type: string
+          minLength: 1
+      required: [eventId, flatNumber, visitorName, visitType, provider]
+    SimulatedVisitResponse:
+      type: object
+      properties:
+        visit:
+          $ref: "#/components/schemas/VisitRecord"
+        duplicate:
+          type: boolean
+        signatureValid:
+          type: boolean
+        message:
+          type: string
+      required: [visit, duplicate, signatureValid, message]
+    VisitDecisionInput:
+      type: object
+      properties:
+        decision:
+          $ref: "#/components/schemas/VisitDecision"
+      required: [decision]
+    PreApprovalRule:
+      type: object
+      properties:
+        id:
+          type: integer
+        flatNumber:
+          type: string
+        visitType:
+          $ref: "#/components/schemas/VisitType"
+        visitorMatch:
+          type: ["string", "null"]
+        scheduleLabel:
+          type: string
+        daysOfWeek:
+          type: array
+          items:
+            $ref: "#/components/schemas/DayOfWeek"
+        startTime:
+          type: string
+        endTime:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, flatNumber, visitType, visitorMatch, scheduleLabel, daysOfWeek, startTime, endTime, active, createdAt]
+    PreApprovalRuleInput:
+      type: object
+      properties:
+        flatNumber:
+          type: string
+          minLength: 1
+        visitType:
+          $ref: "#/components/schemas/VisitType"
+        visitorMatch:
+          type: ["string", "null"]
+        scheduleLabel:
+          type: string
+          minLength: 1
+        daysOfWeek:
+          type: array
+          items:
+            $ref: "#/components/schemas/DayOfWeek"
+          minItems: 1
+        startTime:
+          type: string
+          pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+        endTime:
+          type: string
+          pattern: "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+        active:
+          type: boolean
+      required: [flatNumber, visitType, visitorMatch, scheduleLabel, daysOfWeek, startTime, endTime, active]
+    PreApprovalRuleUpdate:
+      type: object
+      properties:
+        active:
+          type: boolean
+      required: [active]
 

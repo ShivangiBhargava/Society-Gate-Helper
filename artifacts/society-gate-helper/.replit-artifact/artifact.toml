@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Society Gate Helper"
+description = "A working demo for Indian apartment societies that simulates doorbell visits, routes delivery and guest requests for resident approval, supports pre-approval rules, and keeps a searchable guard-side visitor log. Approval informs the guard; it does not unlock a gate."
+version = "1.0.0"
+id = "artifacts/society-gate-helper"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23019
+
+[services.development]
+run = "pnpm --filter @workspace/society-gate-helper run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/society-gate-helper", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/society-gate-helper/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23019"
+BASE_PATH = "/"
