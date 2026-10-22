@@ -28,9 +28,6 @@ const INDIA_TIME_ZONE = 'Asia/Kolkata';
 
 const timeLabel = (value?: string | null) => value ? new Date(value).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: INDIA_TIME_ZONE }) : '—';
 const dateLabel = (value?: string | null) => value ? new Date(value).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: INDIA_TIME_ZONE }) : '—';
-const indiaWeekday = (value: Date) => value.toLocaleDateString('en-IN', { weekday: 'long', timeZone: INDIA_TIME_ZONE });
-const indiaHour = (value: Date) => Number(new Intl.DateTimeFormat('en-IN', { hour: '2-digit', hourCycle: 'h23', timeZone: INDIA_TIME_ZONE }).format(value));
-const greeting = (value: Date) => indiaHour(value) < 12 ? 'Good morning' : indiaHour(value) < 17 ? 'Good afternoon' : 'Good evening';
 const titleCase = (value: string) => value.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 const initials = (name: string) => name.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('') || 'V';
 const visitIcon = (type: VisitType) => type === 'delivery' ? <Package size={16} /> : type === 'guest' ? <Users size={16} /> : <ShieldQuestion size={16} />;
@@ -133,7 +130,7 @@ function HomePage() {
     });
   };
   return <div className="page-wrap">
-    <PageHeading eyebrow={`${indiaWeekday(new Date())} · Society operations`} title={`${greeting(new Date())}, team.`} description="A clear view of every arrival, decision, and resident pre-approval at the gate." right={<div className="date-label"><CalendarDays size={14} />{new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric', timeZone: INDIA_TIME_ZONE })}</div>} />
+    <PageHeading eyebrow="Society operations" title="Hello, team." description="A clear view of every arrival, decision, and resident pre-approval at the gate." right={<div className="date-label"><CalendarDays size={14} />{new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric', timeZone: INDIA_TIME_ZONE })}</div>} />
     {dashboard.isLoading ? <><SkeletonBlock count={5} /><div className="skeleton skeleton-line" style={{ height: 290 }} /></> : dashboard.isError ? <QueryError onRetry={() => void dashboard.refetch()} /> : dashboard.data && <>
       <DashboardStats data={dashboard.data} />
       <div className="overview-grid">
