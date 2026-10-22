@@ -1,0 +1,29 @@
+kind = "video"
+videoAspectRatio = "16:9"
+previewPath = "/society-gate-helper-demo-video/"
+title = "Society Gate Helper Demo Film"
+description = "A short animated product demo showing how Society Gate Helper records a simulated arrival, lets a resident make a decision, and keeps the guard informed."
+version = "1.0.0"
+id = "artifacts/society-gate-helper-demo-video"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/society-gate-helper-demo-video/" ]
+localPort = 22221
+
+[services.development]
+run = "pnpm --filter @workspace/society-gate-helper-demo-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/society-gate-helper-demo-video", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/society-gate-helper-demo-video/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22221"
+BASE_PATH = "/society-gate-helper-demo-video/"
