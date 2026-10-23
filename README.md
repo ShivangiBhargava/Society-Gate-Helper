@@ -2,10 +2,18 @@
 
 A Ring-inspired smart gate and visitor management simulator built for residential communities. This project reimagines the front gate experience as a streamlined digital workflow where visitors, residents, and guards can collaborate in real time to approve, track, and manage arrivals.
 
-This project is designed for the Ring track of the Amazon AppDev 2026 hackathon and includes a live demo experience for simulated gate operations.
+# What the idea is
 
-Live demo:
-https://society-gate-helper--shiviiiiji.replit.app
+In most Indian apartment societies, every visitor and delivery goes through the guard. He calls the flat on an intercom, the resident says “send him up” or “no”, and a paper register records it. It gets messy when the resident isn’t home, when five delivery apps arrive in the same hour, or when the guard lets someone in without asking.
+
+# Flow:
+
+1. A visitor or delivery person presses the doorbell at the gate. Ring sends a button press webhook to your server.
+2. Your server finds who the visit is for and sends the resident a notification with a snapshot and the visitor type: delivery, guest, or unknown.
+3. The resident taps Approve, Deny, or Leave at gate.
+4. The decision shows on the guard’s screen, with a plain message like “Flat 402: Zomato delivery approved”. It is also written to a log.
+5. Pre-approvals: a resident can say “my cook comes 8 to 9am daily” or “Amazon delivery today”. Those visits are approved automatically, and anything unexpected goes to the resident.
+6. A daily or weekly log gives the society a searchable visitor record.
 
 ## Overview
 
