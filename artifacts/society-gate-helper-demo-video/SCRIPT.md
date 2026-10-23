@@ -14,47 +14,48 @@
 ## Audio spec
 
 - Runtime: 48 s (SCENE_DURATIONS total).
-- Music: warm modern electronic instrumental, 112 BPM, tactile muted percussion, rounded bass pulse, airy marimba/synth plucks; assured and human, steadily building without urgency. The generated bed has strong accents at 8.57 s, 17.14 s, 25.71 s, 34.29 s, and 42.86 s, with a resolved ending. No vocals.
-- Voiceover and SFX: not requested; none.
-- Playback file: `public/audio/bg_music.mp3`.
-- The generateMusic callback was attempted but unavailable because this run could not confirm paid-mode use. As a fallback, the instrumental was synthesized locally and encoded as MP3. RMS onset inspection confirmed strong accents at the scene cuts above; these cuts are locked to the measured 4-bar accents.
+- Music: warm modern electronic instrumental, 112 BPM, tactile muted percussion, rounded bass pulse, airy marimba/synth plucks; assured and human, steadily building without urgency. No vocals. The existing 48-second instrumental has measured rhythmic accents at 8.55 s, 17.10 s, 25.70 s, 34.25 s, and 42.85 s; the scene cuts stay on the nearest accents. Music generation callback was blocked because paid-mode confirmation is unavailable in this run, so the existing locally synthesized bed is retained.
+- Voiceover (requested): one warm, assured female narrator; conversational pace, lightly intimate, no salesy emphasis. Shot 01 at 0.45 s: “At the gate, every arrival starts with a clear record.” Shot 02 at 9.25 s: “A signed test event is recorded, then routed to the right decision queue.” Shot 03 at 17.55 s: “The resident makes the call. Approval records a decision; it never opens the gate.” Shot 04 at 26.00 s: “The attendant verifies who’s at the entrance. Familiar visits can match a schedule.” Shot 05 at 34.65 s: “Every arrival and decision stays in a searchable visitor record.” Shot 06 at 43.00 s: “Society Gate. Record first. Decide clearly. Verify at the gate.”
+- SFX: none requested.
+- Voice playback: timed browser speech synthesis requests an English voice whose name identifies it as female; it is paused, cancelled on scene changes, and silenced by the audio mute control. TTS generation callback was blocked because paid-mode confirmation is unavailable in this run. The Chromium verification environment exposed no speech voices, so this fallback does not produce audible narration there and is not embedded in the music file/export; a generated female VO still requires the callback to run in paid mode.
+- Playback file: `public/audio/bg_music.mp3` (instrumental); female narration is timed in `src/components/video/FemaleNarration.tsx`.
 
 ## Timeline
 
 | Shot | Time | Focus | Main action | Handoff |
 |---|---:|---|---|---|
-| 01 | 0.00–8.57 | Society overview | Door-mark opens; five live metrics and arrival list build out | Crop through simulator card |
-| 02 | 8.57–17.14 | Signed doorbell simulator | Visitor form types in, event packet signs, a route line enters the visit queue | Amber event trace becomes a decision divider |
-| 03 | 17.14–25.71 | Resident approval | Waiting visitor card resolves with a human approval; gate remains a separate step | Approved status pill enlarges into guard-desk marker |
-| 04 | 25.71–34.29 | Attendant + pre-approval | Guard marks arrival at gate; separate rule-match vignette recognizes an Amazon delivery | Rule clock arcs into record timeline |
-| 05 | 34.29–42.86 | Visitor record | Filters narrow; event IDs and decisions stack into an auditable timeline | Timeline rule straightens into end-card baseline |
-| 06 | 42.86–48.00 | Resolution | UI panels contract into door mark and takeaway; last mark opens into shot 01 | Door-shaped iris loops to opening |
+| 01 | 0.00–8.55 | Society overview | Door-mark opens; five live metrics and arrival list build out | Crop through simulator card |
+| 02 | 8.55–17.10 | Signed doorbell simulator | Visitor form types in, event packet signs, a route line enters the visit queue | Amber event trace becomes a decision divider |
+| 03 | 17.10–25.70 | Resident approval | Waiting visitor card resolves with a human approval; gate remains a separate step | Approved status pill enlarges into guard-desk marker |
+| 04 | 25.70–34.25 | Attendant + pre-approval | Guard marks arrival at gate; separate rule-match vignette recognizes an Amazon delivery | Rule clock arcs into record timeline |
+| 05 | 34.25–42.85 | Visitor record | Filters narrow; event IDs and decisions stack into an auditable timeline | Timeline rule straightens into end-card baseline |
+| 06 | 42.85–48.00 | Resolution | UI panels contract into door mark and takeaway; last mark opens into shot 01 | Door-shaped iris loops to opening |
 
 ## Shot-by-shot script
 
-### Shot 01 / 0.00–8.57 / 8.57 s — “A CLEAR VIEW OF EVERY ARRIVAL”
+### Shot 01 / 0.00–8.55 / 8.55 s — “A CLEAR VIEW OF EVERY ARRIVAL”
 
 **Purpose:** Establish that Society Gate is a real operations interface with a live queue, not a vague access-control promise.
 
-**Exact content and holds:** At 0.00 s, small wordmark “SOCIETY GATE / VISITOR DESK”; 0.35 s, large “EVERY ARRIVAL.”; 0.82 s, “One desk for arrivals, decisions, and resident pre-approvals.” At 1.10 s, interface labels: “Society operations”, “Hello, team.”, “Visits today”, “Awaiting decision”, “Approved today”, “Denied today”, “Active rules”, “Latest arrivals”, “Ravi Kumar”, “Amazon delivery”, “Aarav Mehta”. Keep legible UI until 7.25 s; from 7.25–8.57 s the camera pushes toward the simulator card while the phrase “A signed test event.” appears and travels with the card.
+**Exact content and holds:** At 0.00 s, small wordmark “SOCIETY GATE / VISITOR DESK”; 0.35 s, large “EVERY ARRIVAL.”; 0.82 s, “One desk for arrivals, decisions, and resident pre-approvals.” At 1.10 s, interface labels: “Society operations”, “Hello, team.”, “Visits today”, “Awaiting decision”, “Approved today”, “Denied today”, “Active rules”, “Latest arrivals”, “Ravi Kumar”, “Amazon delivery”, “Aarav Mehta”. Keep legible UI until 7.25 s; from 7.25–8.55 s the camera pushes toward the simulator card while the phrase “A signed test event.” appears and travels with the card.
 
 **Composition:** Navy full-bleed field. Door-mark at centre grows to 20vmin and opens into a 16:9 dashboard window occupying 82% width and 77% height, slightly right of centre; title remains upper-left in the frame margin. Interface itself uses pale cool-gray panels, amber accents, thin dividers, tiny but readable data text. Background stays calm and largely untextured.
 
 **Artistic idea:** Five metric tiles begin as five amber/nacre slivers that click into a single dashboard; their rounded edges echo a row of doors.
 
-**Timed choreography:** 0.00–0.30 s mark opens with a stiff scale snap; 0.35–0.80 s “EVERY ARRIVAL.” stamps in over a one-beat amber rule. 0.80–1.60 s dashboard surface unfolds from that rule. 1.60–2.30 s metric values count/settle; 2.30–3.20 s latest arrival rows stage in one by one; 3.20–4.20 s status colors pulse once, never flash. 4.20–7.15 s readable wide hold with subtle 1.03 camera push. 7.15–8.57 s crop and perspective lean toward the simulator area; its amber border expands past frame with the first beat of shot 02 already visible.
+**Timed choreography:** 0.00–0.30 s mark opens with a stiff scale snap; 0.35–0.80 s “EVERY ARRIVAL.” stamps in over a one-beat amber rule. 0.80–1.60 s dashboard surface unfolds from that rule. 1.60–2.30 s metric values count/settle; 2.30–3.20 s latest arrival rows stage in one by one; 3.20–4.20 s status colors pulse once, never flash. 4.20–7.15 s readable wide hold with subtle 1.03 camera push. 7.15–8.55 s crop and perspective lean toward the simulator area; its amber border expands past frame with the first beat of shot 02 already visible.
 
 **Transition contract:** The amber edge of the simulator card is the same visible edge in shot 02. The push, card-surface split, and 10-degree perspective shift overlap; do not fade to an empty field.
 
 **Assets and technique:** Hand-built CSS/SVG interface artwork based on the supplied Society Gate product UI; no external image required. Use clipped panel reveals, transform/opacity, and precise value counters.
 
-**Sound intent:** Procedurally synthesized instrumental; cut at 8.57 s, measured as a strong 4-bar onset.
+**Sound intent:** Instrumental bed with requested female narration beginning at 0.45 s; cut at 8.55 s on the nearest measured accent.
 
-### Shot 02 / 8.57–17.14 / 8.57 s — “SIGNED. RECORDED. ROUTED.”
+### Shot 02 / 8.55–17.10 / 8.55 s — “SIGNED. RECORDED. ROUTED.”
 
 **Purpose:** Demonstrate that the simulator sends a signed test arrival through the same decision queue while remaining clearly a demo—not real Ring hardware.
 
-**Exact content and holds:** At 8.57 s oversized “SIGNED.”; 8.95 s “RECORDED.”; 9.33 s “ROUTED.”, each briefly owning the central area. From 9.82 s, a simulator panel shows “Signed doorbell simulator”, “Send a signed Ring-style event through the live gate flow.”, “Apartment / flat”, “Visitor name”, “Visit type”, “Company / provider”; values type in as “B-704”, “Neha Iyer”, “Guest”, “Mehta family”. Button artwork reads “Send a test arrival”. A note reads “This does not open or control a physical gate.” At 13.57 s, a packet panel reads “EVENT VERIFIED”, “HMAC · valid”, “eventId · sg-demo-0482”, “source · Ring simulator”. At 14.92 s, destination says “Resident decision queue” and “Valid signature. Visit sent to the resident for a decision.”
+**Exact content and holds:** At 8.55 s oversized “SIGNED.”; 8.93 s “RECORDED.”; 9.31 s “ROUTED.”, each briefly owning the central area. From 9.80 s, a simulator panel shows “Signed doorbell simulator”, “Send a signed Ring-style event through the live gate flow.”, “Apartment / flat”, “Visitor name”, “Visit type”, “Company / provider”; values type in as “B-704”, “Neha Iyer”, “Guest”, “Mehta family”. Button artwork reads “Send a test arrival”. A note reads “This does not open or control a physical gate.” At 13.55 s, a packet panel reads “EVENT VERIFIED”, “HMAC · valid”, “eventId · sg-demo-0482”, “source · Ring simulator”. At 14.90 s, destination says “Resident decision queue” and “Valid signature. Visit sent to the resident for a decision.”
 
 **Composition:** Interface macro is angled, occupying 65% of the frame at left; right side holds a dark packet trace with pale mono lettering. The actual form values remain crisp against pale panel. Small disclaimer is readable inside the panel.
 
@@ -66,13 +67,13 @@
 
 **Assets and technique:** Product UI built with DOM; SVG path tracing and status geometry. No fabricated official Ring payload or claim of a live device integration.
 
-**Sound intent:** Cut at 17.14 s on a measured strong 4-bar onset.
+**Sound intent:** Cut at 17.10 s on the nearest measured rhythmic accent.
 
-### Shot 03 / 17.14–25.71 / 8.57 s — “A HUMAN MAKES THE CALL”
+### Shot 03 / 17.10–25.70 / 8.60 s — “A HUMAN MAKES THE CALL”
 
 **Purpose:** Show the resident's decision as a deliberate human action and clarify that approval is not gate actuation.
 
-**Exact content and holds:** 17.14 s, “A HUMAN MAKES THE CALL.”; 17.74 s a visit card: “Neha Iyer”, “Flat B-704”, “Guest”, “Mehta family”, “Waiting for a resident decision”, status “Pending”. Two purely visual interface actions read “Approve” and “Deny”. 19.64 s, chosen result becomes “Approved”; decision note: “Flat B-704: guest approved”. At 21.14 s, a separate attendant card arrives: “Gate attendant”, “Verify the visitor at the entrance.” 22.14 s, large clear line: “Approval records a decision. It does not unlock the gate.” Hold through 24.04 s; then status pill becomes a framed portal to next shot.
+**Exact content and holds:** 17.10 s, “A HUMAN MAKES THE CALL.”; 17.70 s a visit card: “Neha Iyer”, “Flat B-704”, “Guest”, “Mehta family”, “Waiting for a resident decision”, status “Pending”. Two purely visual interface actions read “Approve” and “Deny”. 19.60 s, chosen result becomes “Approved”; decision note: “Flat B-704: guest approved”. At 21.10 s, a separate attendant card arrives: “Gate attendant”, “Verify the visitor at the entrance.” 22.10 s, large clear line: “Approval records a decision. It does not unlock the gate.” Hold through 24.00 s; then status pill becomes a framed portal to next shot.
 
 **Composition:** High-contrast warm ivory center card on a deep navy field; card occupies 75% width, aligned low-left with large headline top-left. The card is the hero; status pill and two action labels form its lower edge, avoiding overlapping headline. Ambient details limited to a fine radial timing arc behind card.
 
@@ -84,13 +85,13 @@
 
 **Assets and technique:** UI typography, radial SVG track, split-panel mask, sparse amber/green status. All controls are visual artwork only, not film interactivity.
 
-**Sound intent:** Cut at 25.71 s on a measured strong 4-bar onset.
+**Sound intent:** Cut at 25.70 s on the nearest measured rhythmic accent.
 
-### Shot 04 / 25.71–34.29 / 8.58 s — “THE GATE DESK STAYS IN THE LOOP”
+### Shot 04 / 25.70–34.25 / 8.55 s — “THE GATE DESK STAYS IN THE LOOP”
 
 **Purpose:** Show the attendant's at-gate verification and distinguish it from a scheduled pre-approval.
 
-**Exact content and holds:** 25.71 s: “THE ATTENDANT STAYS IN THE LOOP.” 26.26 s interface states “Gate desk”, “At the desk”, “1 waiting”, “Neha Iyer”, “Flat B-704 · Guest · Mehta family”, “Arrived 10:42 AM”, “Approved”, “Mark at gate”. 28.21 s the row updates “At gate” and shows “Resident confirmed · attendant to verify.” 30.01 s a second, contrasting rule vignette arrives with “Pre-approval”, “Flat 1203”, “Amazon deliveries · any time”, “Delivery · Amazon”, “Approved by pre-approval rule”. 32.31 s caption: “A rule can recognize a familiar visit. The attendant still verifies who arrived.”
+**Exact content and holds:** 25.70 s: “THE ATTENDANT STAYS IN THE LOOP.” 26.25 s interface states “Gate desk”, “At the desk”, “1 waiting”, “Neha Iyer”, “Flat B-704 · Guest · Mehta family”, “Arrived 10:42 AM”, “Approved”, “Mark at gate”. 28.20 s the row updates “At gate” and shows “Resident confirmed · attendant to verify.” 30.00 s a second, contrasting rule vignette arrives with “Pre-approval”, “Flat 1203”, “Amazon deliveries · any time”, “Delivery · Amazon”, “Approved by pre-approval rule”. 32.30 s caption: “A rule can recognize a familiar visit. The attendant still verifies who arrived.”
 
 **Composition:** Wide attendant desk at left occupies 56% of frame; at right, rule detail sits on a pale card suspended over a simple drawn clock arc. Amber bridges both, blue-green distinct for guard state. Horizontal queue becomes vertical time-window circle.
 
@@ -102,13 +103,13 @@
 
 **Assets and technique:** Interface typography, SVG time ring, animated status marker, split-screen and shared-line transition. These are product illustrations, not claims of hardware integration.
 
-**Sound intent:** Cut at 34.29 s on a measured strong 4-bar onset.
+**Sound intent:** Cut at 34.25 s on the nearest measured rhythmic accent.
 
-### Shot 05 / 34.29–42.86 / 8.57 s — “EVERY DECISION, IN THE RECORD”
+### Shot 05 / 34.25–42.85 / 8.60 s — “EVERY DECISION, IN THE RECORD”
 
 **Purpose:** Close the operational loop with transparent, searchable visitor history.
 
-**Exact content and holds:** At 34.29 s title “EVERY DECISION, IN THE RECORD.”; 34.84 s table heading “Visitor record”, “Search name, flat, or event ID”, “All statuses”, “All visit types”. Rows: “Neha Iyer / B-704 / Guest / Mehta family / Approved / 10:42”; “Amazon delivery / 1203 / Delivery / Amazon / Approved / 10:31”; “Aarav Mehta / 605 / Guest / Guest / At gate / 10:20”; “Ravi Kumar / 402 / Delivery / Zomato / Pending / 10:12”. 37.49 s filtering motif narrows to “B-704” and Neha row; 38.39 s row expands to “eventId · sg-demo-0482”, “source · Ring simulator”, “Decision recorded · resident approval”. 40.34 s one phrase “Clear history. Human decisions.”. Keep table visible and move toward end-card.
+**Exact content and holds:** At 34.25 s title “EVERY DECISION, IN THE RECORD.”; 34.80 s table heading “Visitor record”, “Search name, flat, or event ID”, “All statuses”, “All visit types”. Rows: “Neha Iyer / B-704 / Guest / Mehta family / Approved / 10:42”; “Amazon delivery / 1203 / Delivery / Amazon / Approved / 10:31”; “Aarav Mehta / 605 / Guest / Guest / At gate / 10:20”; “Ravi Kumar / 402 / Delivery / Zomato / Pending / 10:12”. 37.45 s filtering motif narrows to “B-704” and Neha row; 38.35 s row expands to “eventId · sg-demo-0482”, “source · Ring simulator”, “Decision recorded · resident approval”. 40.30 s one phrase “Clear history. Human decisions.”. Keep table visible and move toward end-card.
 
 **Composition:** Ivory log plane takes 88% width with a top-down perspective of around 4 degrees. Table rows form layered paper strips; headings small, rows large enough to read. A left-side magnified strip shows one event ID in mono, not competing with the table.
 
@@ -120,13 +121,13 @@
 
 **Assets and technique:** CSS table/rows; SVG focus-frame and scanning path; masked type. Generated imagery is not necessary for a software demo.
 
-**Sound intent:** Cut at 42.86 s on a measured strong 4-bar onset.
+**Sound intent:** Cut at 42.85 s on the nearest measured rhythmic accent.
 
-### Shot 06 / 42.86–48.00 / 5.14 s — “A CALMER FRONT DOOR”
+### Shot 06 / 42.85–48.00 / 5.15 s — “A CALMER FRONT DOOR”
 
 **Purpose:** Resolve the demo on responsible operations: record first, human review, attendant in the loop.
 
-**Exact content and holds:** 42.86 s on a strong warm paper field, “RECORD FIRST.”; 43.18 s “DECIDE CLEARLY.”; 43.50 s “VERIFY AT THE GATE.” Then a 43.80 s lockup “SOCIETY GATE” and below “Every arrival has a clear next step.” Small footer: “Simulation demo · no physical gate control.” Hold final copy fully legible from 44.35 to 47.00 s. At 47.00 s, door-mark aperture opens and carries the frame into the navy opening field.
+**Exact content and holds:** 42.85 s on a strong warm paper field, “RECORD FIRST.”; 43.15 s “DECIDE CLEARLY.”; 43.45 s “VERIFY AT THE GATE.” Then a 43.75 s lockup “SOCIETY GATE” and below “Every arrival has a clear next step.” Small footer: “Simulation demo · no physical gate control.” Hold final copy fully legible from 44.30 to 46.95 s. At 46.95 s, door-mark aperture opens and carries the frame into the navy opening field.
 
 **Composition:** Pale warm full-field unlike the dark opener. Centered wordmark is built from the four re-folded interface panels; small mark, large brand name, quiet one-line takeaway. A thin amber line holds the composition; ample margin gives the copy air. Closing logo is smaller than the opening dashboard hero, making the ending structurally different.
 
@@ -138,7 +139,7 @@
 
 **Assets and technique:** Typography and original geometric door-mark; four-panel fold, radial mask and restrained highlight.
 
-**Sound intent:** Music resolves by 48.00 s and loops at the matching door-mark onset. The generated bed fades at the final 0.55 s; no seam check was performed.
+**Sound intent:** Female narration resolves on the lockup; instrumental resolves by 48.00 s and the door-mark aperture hands back to the opening.
 
 ## Variety / feasibility review
 

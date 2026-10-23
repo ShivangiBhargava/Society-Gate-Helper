@@ -14,13 +14,14 @@ import {
   SceneResident,
   SceneSimulator,
 } from './SocietyScenes';
+import { FemaleNarration } from './FemaleNarration';
 
 export const SCENE_DURATIONS = {
-  overview: 8570,
-  simulator: 8570,
-  resident: 8570,
-  gateDesk: 8570,
-  record: 8570,
+  overview: 8550,
+  simulator: 8550,
+  resident: 8600,
+  gateDesk: 8550,
+  record: 8600,
   finale: 5150,
 };
 
@@ -93,6 +94,7 @@ export default function VideoTemplate({
         <AnimatePresence mode="sync" initial={false}>
           {SceneComponent && <SceneComponent key={currentSceneKey} />}
         </AnimatePresence>
+        <FemaleNarration sceneKey={currentSceneKey} paused={paused} muted={muted} />
         <audio
           ref={audioRef}
           src={`${import.meta.env.BASE_URL}audio/bg_music.mp3`}
