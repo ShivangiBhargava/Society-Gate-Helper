@@ -1,0 +1,21 @@
+What the idea is
+
+In most Indian apartment societies, every visitor and delivery goes through the guard. He calls the flat on an intercom, the resident says “send him up” or “no”, and a paper register records it. It gets messy when the resident isn’t home, when five delivery apps arrive in the same hour, or when the guard lets someone in without asking.
+
+Flow:
+
+A visitor or delivery person presses the doorbell at the gate. Ring sends a button press webhook to your server.
+Your server finds who the visit is for and sends the resident a notification with a snapshot and the visitor type: delivery, guest, or unknown.
+The resident taps Approve, Deny, or Leave at gate.
+The decision shows on the guard’s screen, with a plain message like “Flat 402: Zomato delivery approved”. It is also written to a log.
+Pre-approvals: a resident can say “my cook comes 8 to 9am daily” or “Amazon delivery today”. Those visits are approved automatically, and anything unexpected goes to the resident.
+A daily or weekly log gives the society a searchable visitor record.
+What the Ring docs say
+Button press and motion webhooks, snapshots, and event history exist. That is everything the flow above needs.
+There is no access control API. Ring can’t open a gate or boom barrier. Approval is a decision shown to the guard and the resident, not an automatic unlock. I’d present it as “approval and logging”, not “smart gate”.
+A sandbox with synthetic devices exists, with no rate limits. But the developer-testing docs say real testing needs a Ring doorbell or camera and a US-based Ring account with a Protection plan. Your demo can run on the sandbox.
+Setup takes time. You register as a Ring developer and complete identity verification. The name on your profile must match your government ID. Then you register the app to get the client ID, secret and HMAC key, and you build the OAuth account linking. I can’t tell how long verification takes, and it could threaten a 23-hour timeline.
+Honest assessment
+Strengths: a real, widespread Indian problem, a clear demo, and a fit with the Ring categories of access control, business systems, and caretaking.
+Risks: identity verification may delay you, the hardware and US-only testing limits apply, and Ring’s own app is built around US homes, so the “intercom replacement for an apartment block” framing is a stretch for the real product.
+What I can build here: the webhook server (HMAC verification, deduplication, 200 in under 5 seconds), the resident approval screen, the guard dashboard, the pre-approval rules, and the log. I’d also write a Ring event simulator that sends signed webhooks in the real format, which the rules allow (“show your project working through a simulator”). Whether the sandbox accepts your account depends on the verification step, so the hosted Ring sandbox would be an extra, not something the demo relies on.
